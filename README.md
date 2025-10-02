@@ -135,9 +135,9 @@ Good luck\!
 | :---- | :---- | :---- | :---- | :---- | :---- |
 | POST | /api/v1/keywords | Create New Keyword | JSON: { "name": "JavaScript" } | 201 Created: { "id": "abc123", "name": "JavaScript", "isActive": true, "createdAt": "...", "updatedAt": "..." } | { "message": "Keyword 'name' is required and must be a string."} |
 | GET | /api/v1/keywords | List all keywords (supports filters & pagination) | Query Params: isActive=true/false, sortBy=name/createdAt, sortOrder=asc/desc, page=1, limit=10 | [ { "id": "abc123", "name": "JavaScript", "isActive": true, "createdAt": "...", "updatedAt": "..." }, ... ] | { "message": "Something went wrong!", "error": "<error details>" } |
-| GET | /api/v1/keywords/:id | *Applicant to fill out* |  |  |  |
-| PUT | /api/v1/keywords/:id | *Applicant to fill out* |  |  |  |
-| PATCH | /api/v1/keywords/:id/status | *Applicant to fill out* |  |  |  |
+| GET | /api/v1/keywords/:id | Get a keyword by ID | :id in URL path | { "id": "abc123", "name": "JavaScript", "isActive": true, "createdAt": "...", "updatedAt": "..." } | 404 Not Found: { "message": "Keyword not found" } |
+| PUT | /api/v1/keywords/:id | Update a keyword (full update) | JSON: { "name": "Updated Name", "isActive": false } | { "id": "abc123", "name": "Updated Name", "isActive": false, "createdAt": "...", "updatedAt": "..." } | 400 Bad Request: { "message": "Invalid input" } OR 404 Not Found: { "message": "Keyword not found" } |
+| PATCH | /api/v1/keywords/:id/status | Update keyword’s active status (partial update) | JSON: { "isActive": true } | 200 OK: { "id": "abc123", "name": "JavaScript", "isActive": false, "createdAt": "...", "updatedAt": "..." | { "message": "Keyword ID is required" } { "message": "'isActive' must be a boolean (true/false)" } { "message": "Keyword not found" } |
 | DELETE | /api/v1/keywords/:id | *Applicant to fill out* |  |  |  |
 
 ### **Scan API**
