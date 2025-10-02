@@ -1,7 +1,7 @@
 import express, { Application, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import apiRoutes from './routes';
+import apiRoutes from './route';
 
 dotenv.config();
 

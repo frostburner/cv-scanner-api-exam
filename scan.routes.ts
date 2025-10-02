@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import multer from 'multer';
-import * as scanController from '../controllers/scan.controller';
+import * as scanController from './controllers/ScannerController.ts';
 
 const router = Router();
 

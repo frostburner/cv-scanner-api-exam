@@ -1,5 +1,5 @@
 import app from './app';
-import { initializeFirebase } from './config/firebase';
+import { initializeFirebase } from './config';
 
 const PORT = process.env.PORT || 8080;
 

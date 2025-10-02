@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import * as keywordController from '../controllers/keyword.controller';
+import * as keywordController from './controllers/KeywordController.ts';
 
 const router = Router();
 
