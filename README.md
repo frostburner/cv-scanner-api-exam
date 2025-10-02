@@ -134,7 +134,7 @@ Good luck\!
 | Method | Endpoint | Description | Request Body / Params | Success Response (200) | Error Response (4xx/5xx) |
 | :---- | :---- | :---- | :---- | :---- | :---- |
 | POST | /api/v1/keywords | Create New Keyword | JSON: { "name": "JavaScript" } | 201 Created: { "id": "abc123", "name": "JavaScript", "isActive": true, "createdAt": "...", "updatedAt": "..." } | { "message": "Keyword 'name' is required and must be a string."} |
-| GET | /api/v1/keywords | *Applicant to fill out (including query params)* |  |  |  |
+| GET | /api/v1/keywords | List all keywords (supports filters & pagination) | Query Params: isActive=true/false, sortBy=name/createdAt, sortOrder=asc/desc, page=1, limit=10 | [ { "id": "abc123", "name": "JavaScript", "isActive": true, "createdAt": "...", "updatedAt": "..." }, ... ] | { "message": "Something went wrong!", "error": "<error details>" } |
 | GET | /api/v1/keywords/:id | *Applicant to fill out* |  |  |  |
 | PUT | /api/v1/keywords/:id | *Applicant to fill out* |  |  |  |
 | PATCH | /api/v1/keywords/:id/status | *Applicant to fill out* |  |  |  |
