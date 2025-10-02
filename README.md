@@ -138,7 +138,7 @@ Good luck\!
 | GET | /api/v1/keywords/:id | Get a keyword by ID | :id in URL path | { "id": "abc123", "name": "JavaScript", "isActive": true, "createdAt": "...", "updatedAt": "..." } | 404 Not Found: { "message": "Keyword not found" } |
 | PUT | /api/v1/keywords/:id | Update a keyword (full update) | JSON: { "name": "Updated Name", "isActive": false } | { "id": "abc123", "name": "Updated Name", "isActive": false, "createdAt": "...", "updatedAt": "..." } | 400 Bad Request: { "message": "Invalid input" } OR 404 Not Found: { "message": "Keyword not found" } |
 | PATCH | /api/v1/keywords/:id/status | Update keyword’s active status (partial update) | JSON: { "isActive": true } | 200 OK: { "id": "abc123", "name": "JavaScript", "isActive": false, "createdAt": "...", "updatedAt": "..." | { "message": "Keyword ID is required" } { "message": "'isActive' must be a boolean (true/false)" } { "message": "Keyword not found" } |
-| DELETE | /api/v1/keywords/:id | *Applicant to fill out* |  |  |  |
+| DELETE | /api/v1/keywords/:id | Delete a keyword by ID | Path Param: id (string) | 200 OK: { "message": "Keyword with ID abc123 has been deleted" } | { "message": "Keyword ID is required" } { "message": "Keyword not found" } |
 
 ### **Scan API**
 
