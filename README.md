@@ -133,17 +133,17 @@ Good luck\!
 
 | Method | Endpoint | Description | Request Body / Params | Success Response (200) | Error Response (4xx/5xx) |
 | :---- | :---- | :---- | :---- | :---- | :---- |
-| POST | /api/v1/keywords | *Applicant to fill out* |  |  |  |
-| GET | /api/v1/keywords | *Applicant to fill out (including query params)* |  |  |  |
-| GET | /api/v1/keywords/:id | *Applicant to fill out* |  |  |  |
-| PUT | /api/v1/keywords/:id | *Applicant to fill out* |  |  |  |
-| PATCH | /api/v1/keywords/:id/status | *Applicant to fill out* |  |  |  |
-| DELETE | /api/v1/keywords/:id | *Applicant to fill out* |  |  |  |
+| POST | /api/v1/keywords | Create New Keyword | JSON: { "name": "JavaScript" } | 201 Created: { "id": "abc123", "name": "JavaScript", "isActive": true, "createdAt": "...", "updatedAt": "..." } | { "message": "Keyword 'name' is required and must be a string."} |
+| GET | /api/v1/keywords | List all keywords (supports filters & pagination) | Query Params: isActive=true/false, sortBy=name/createdAt, sortOrder=asc/desc, page=1, limit=10 | [ { "id": "abc123", "name": "JavaScript", "isActive": true, "createdAt": "...", "updatedAt": "..." }, ... ] | { "message": "Something went wrong!", "error": "<error details>" } |
+| GET | /api/v1/keywords/:id | Get a keyword by ID | :id in URL path | { "id": "abc123", "name": "JavaScript", "isActive": true, "createdAt": "...", "updatedAt": "..." } | 404 Not Found: { "message": "Keyword not found" } |
+| PUT | /api/v1/keywords/:id | Update a keyword (full update) | JSON: { "name": "Updated Name", "isActive": false } | { "id": "abc123", "name": "Updated Name", "isActive": false, "createdAt": "...", "updatedAt": "..." } | 400 Bad Request: { "message": "Invalid input" } OR 404 Not Found: { "message": "Keyword not found" } |
+| PATCH | /api/v1/keywords/:id/status | Update keyword’s active status (partial update) | JSON: { "isActive": true } | 200 OK: { "id": "abc123", "name": "JavaScript", "isActive": false, "createdAt": "...", "updatedAt": "..." | { "message": "Keyword ID is required" } { "message": "'isActive' must be a boolean (true/false)" } { "message": "Keyword not found" } |
+| DELETE | /api/v1/keywords/:id | Delete a keyword by ID | Path Param: id (string) | 200 OK: { "message": "Keyword with ID abc123 has been deleted" } | { "message": "Keyword ID is required" } { "message": "Keyword not found" } |
 
 ### **Scan API**
 
 | Method | Endpoint | Description | Request Body / Params | Success Response (200) | Error Response (4xx/5xx) |
 | :---- | :---- | :---- | :---- | :---- | :---- |
-| POST | /api/v1/scan | *Applicant to fill out* |  |  |  |
-| POST | /api/v1/rescan | *Applicant to fill out* |  |  |  |
+| POST | /api/v1/scan | Upload and scan a CV (PDF). Extracts email, name, matches active keywords, and saves the CV in Firestore. | Key = cv (File, PDF) | { "email": "villarafaeljoseph@gmail.com", "extractedName": "April 2025", "matchedKeywords": [], "fullText": "...", "scannedAt": { "_seconds": 1759391908, "_nanoseconds": 204000000}, "updatedAt": "2025-10-02T10:03:22.349Z"} | - 400 No CV file uploaded. <br> - 400 No email found in cv. <br> - 500 Something went wrong! |
+| POST | /api/v1/rescan | Rescan an existing CV by re-checking the stored text against the latest active keywords. | JSON Body: { "email": "villarafaeljoseph@gmail.com" } | { "email": "villarafaeljoseph@gmail.com", "extractedName": "April 2025", "matchedKeywords": [], "fullText": "...", "scannedAt": { "_seconds": 1759391908, "_nanoseconds": 204000000 }, "updatedAt": "2025-10-02T10:03:22.349Z" } | - 400 Email is required for rescan. <br> - 404 Scanned CV is not found. <br> - 400 CV is missing for rescanning. <br> - 500 Something went wrong!  |
 
