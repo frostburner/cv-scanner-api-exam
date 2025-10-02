@@ -133,7 +133,9 @@ Good luck\!
 
 | Method | Endpoint | Description | Request Body / Params | Success Response (200) | Error Response (4xx/5xx) |
 | :---- | :---- | :---- | :---- | :---- | :---- |
-| POST | /api/v1/keywords | *Applicant to fill out* |  |  |  |
+| POST | /api/v1/keywords | Create New Keyword | JSON: { "name": "JavaScript" } | 201 Created: { "id": "abc123", "name": "JavaScript", "isActive": true, "createdAt": "...", "updatedAt": "..." } | {
+  "message": "Keyword 'name' is required and must be a string."
+} |
 | GET | /api/v1/keywords | *Applicant to fill out (including query params)* |  |  |  |
 | GET | /api/v1/keywords/:id | *Applicant to fill out* |  |  |  |
 | PUT | /api/v1/keywords/:id | *Applicant to fill out* |  |  |  |
