@@ -8,15 +8,14 @@ dotenv.config();
 
 const app: Application = express();
 
-// --- Middlewares ---
+
+
+// Middlewares
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// --- Serve static frontend ---
-app.use(express.static(path.join(__dirname, "../public")));
-
-// --- Root route: serve index.html ---
+// Serve Index.html
 app.get("/", (req: Request, res: Response) => {
     res.sendFile(path.join(process.cwd(), "public", "index.html"));
 });
