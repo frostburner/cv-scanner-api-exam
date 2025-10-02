@@ -145,5 +145,5 @@ Good luck\!
 | Method | Endpoint | Description | Request Body / Params | Success Response (200) | Error Response (4xx/5xx) |
 | :---- | :---- | :---- | :---- | :---- | :---- |
 | POST | /api/v1/scan | Upload and scan a CV (PDF). Extracts email, name, matches active keywords, and saves the CV in Firestore. | Key = cv (File, PDF) | { "email": "villarafaeljoseph@gmail.com", "extractedName": "April 2025", "matchedKeywords": [], "fullText": "...", "scannedAt": { "_seconds": 1759391908, "_nanoseconds": 204000000}, "updatedAt": "2025-10-02T10:03:22.349Z"} | - 400 No CV file uploaded. <br> - 400 No email found in cv. <br> - 500 Something went wrong! |
-| POST | /api/v1/rescan | *Applicant to fill out* |  |  |  |
+| POST | /api/v1/rescan | Rescan an existing CV by re-checking the stored text against the latest active keywords. | JSON Body: { "email": "villarafaeljoseph@gmail.com" } | { "email": "villarafaeljoseph@gmail.com", "extractedName": "April 2025", "matchedKeywords": [], "fullText": "...", "scannedAt": { "_seconds": 1759391908, "_nanoseconds": 204000000 }, "updatedAt": "2025-10-02T10:03:22.349Z" } |  |
 
