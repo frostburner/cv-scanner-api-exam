@@ -1,27 +1,72 @@
 import { Request, Response, NextFunction } from 'express';
+import { getDb } from '../config';
+import { error } from 'console';
+
 
 // THIS IS A STUB FILE. The applicant needs to implement the logic.
 
 export const createKeyword = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        // TODO: Implement logic to create a keyword.
-        // 1. Validate request body (e.g., ensure 'name' is present).
-        // 2. Call a service function to interact with Firestore.
-        // 3. Return the newly created keyword with a 201 status code.
-        res.status(501).json({ message: 'Not Implemented' });
-    } catch (error) {
-        next(error);
+       
+        const { name } = req.body;
+        if (!name || typeof name !== 'string'){
+            return res.status(400).json({message: "Keyword 'name' is required and must be a string."})
+        }
+
+        const db = getDb();
+        const keywordsRef = db.collection('keywords');
+
+        const newKeyword = {
+            name, 
+            isActive: true,
+            createdAt: new Date(),
+            updatedAt: new Date()
+        };
+
+        const docRef = await keywordsRef.add(newKeyword);
+
+        res.status(201).json({ id: docRef.id, ...newKeyword});
+    }catch (error){
+        next(error)
     }
 };
 
+
 export const getKeywords = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        // TODO: Implement logic to get all keywords with filtering, sorting, and pagination.
-        // 1. Extract query params (isActive, sortBy, sortOrder, page, limit).
-        // 2. Build a Firestore query based on the params.
-        // 3. Call a service function to execute the query.
-        // 4. Return the list of keywords.
-        res.status(501).json({ message: 'Not Implemented' });
+    
+    const db = getDb();
+    let query: FirebaseFirestore.Query = db.collection('keywords');
+
+    //Filtering Logic 
+    const { isActive, sortBy, sortOrder, page, limit } = req.query;
+    
+    if (isActive !== undefined) {
+        const activeBool = isActive === 'true';
+        query = query.where('isActive', '==', activeBool);
+
+    }
+
+
+    //Sorting Logic 
+ 
+    const orderField = sortBy === 'name' || sortBy === 'createdAt' ? sortBy : 'createdAt';
+    const orderDirection = sortOrder === 'desc' ? 'desc' : 'asc';
+    query = query.orderBy(orderField as string, orderDirection as FirebaseFirestore.OrderByDirection);
+    
+    const snapshot = await query.get();
+    
+    //Pagination Logic
+    const pageNum = parseInt(page as string) || 1;
+    const limitNum = parseInt(limit as string) || 10;
+    const offset = (pageNum - 1) * limitNum;
+
+    const keywords = snapshot.docs
+        .map(doc=> ({id: doc.id, ...doc.data() }))
+        .slice(offset, offset + limitNum);
+
+    
+    res.status(200).json(keywords);
     } catch (error) {
         next(error);
     }
@@ -29,8 +74,23 @@ export const getKeywords = async (req: Request, res: Response, next: NextFunctio
 
 export const getKeywordById = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        // TODO: Implement logic to get a single keyword.
-        res.status(501).json({ message: 'Not Implemented' });
+
+        const { id } = req.params;
+
+        if (!id) {
+            return res.status(400).json({ message : "Keyword ID is required "});
+        }
+
+        const db = getDb();
+        const docRef = db.collection("keywords").doc(id);
+        const doc = await docRef.get();
+
+        if (!doc.exists){
+            return res.status(404).json({ message : "Keyword is not found. " });
+
+        }
+
+        res.status(200).json({ id: doc.id, ...doc.data() });
     } catch (error) {
         next(error);
     }
@@ -38,8 +98,29 @@ export const getKeywordById = async (req: Request, res: Response, next: NextFunc
 
 export const updateKeyword = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        // TODO: Implement logic to update a keyword's name.
-        res.status(501).json({ message: 'Not Implemented' });
+        
+        const { id } = req.params;
+        const { name } = req.body;
+
+        if (!id) {
+            return res.status(400).json({ message : "Keyword is required" });
+         }
+
+        if (!name || typeof name !== "string") {
+            return res.status(400).json({ message : "Valid 'name' is required" });
+        }
+
+        const db = getDb();
+        const docRef = db.collection("keywords").doc(id);
+        const doc = await docRef.get();
+
+        if (!doc.exists){
+            return res.status(404).json({ message : "Keyword not found" });
+        }
+
+        await docRef.update({ name });
+
+        res.status(201).json({ id, name, ...doc.data()});
     } catch (error) {
         next(error);
     }
@@ -47,8 +128,27 @@ export const updateKeyword = async (req: Request, res: Response, next: NextFunct
 
 export const updateKeywordStatus = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        // TODO: Implement logic to update a keyword's isActive status.
-        res.status(501).json({ message: 'Not Implemented' });
+       const { id } = req.params;
+       const { isActive } = req.body;
+
+       if (!id){
+        return res.status(400).json({message : "Keyword ID is required"});
+    }
+       if (typeof isActive !== "boolean"){
+        return res.status(400).json({ message : "'isActive' must be a boolean (true/false)"});
+       } 
+    
+       const db = getDb();
+       const docRef = db.collection("keywords").doc(id);
+       const doc =  await docRef.get();
+
+       if (!doc.exists) {
+        return res.status(404).json({ message : "Keyword not found" });
+       }
+
+       await docRef.update({ isActive, updatedAt: new Date() });
+
+        res.status(200).json({ id, ...doc.data(), isActive });
     } catch (error) {
         next(error);
     }
@@ -56,8 +156,24 @@ export const updateKeywordStatus = async (req: Request, res: Response, next: Nex
 
 export const deleteKeyword = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        // TODO: Implement logic to delete a keyword.
-        res.status(501).json({ message: 'Not Implemented' });
+        
+        const { id } = req.params;
+
+        if (!id) {
+            return res.status(400).json({ message : "Keyword ID is required"});
+        }
+
+        const db = getDb();
+        const docRef = db.collection("keywords").doc(id);
+        const doc = await docRef.get();
+
+        if (!doc.exists) {
+            return res.status(404).json({ message : "Keyword not found "});
+        }
+
+        await docRef.delete();
+
+        res.status(200).json({ message: `Keyword with ID ${id} has been deleted` });
     } catch (error) {
         next(error);
     }
