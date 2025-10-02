@@ -54,6 +54,7 @@ export const scanCv = async (req: Request, res: Response, next: NextFunction) =>
 
         await scannedCvREf.set(scannedCvData);
 
+        
       res.status(201).json(scannedCvData);
     } catch (error) {
         next(error);
