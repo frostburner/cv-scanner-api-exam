@@ -1,7 +1,7 @@
 import app from './app';
 import { initializeFirebase } from './config';
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8081;
 
 // Initialize Firebase Admin SDK
 try {

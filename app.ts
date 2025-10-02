@@ -2,6 +2,7 @@ import express, { Application, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import apiRoutes from './route';
+import path from 'path';
 
 dotenv.config();
 
@@ -12,22 +13,20 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// --- Serve static frontend ---
+app.use(express.static(path.join(__dirname, "../public")));
 
-// --- API Routes ---
-app.get('/', (req: Request, res: Response) => {
-    res.status(200).json({ message: 'CV Scanner API is running!' });
+// --- Root route: serve index.html ---
+app.get("/", (req: Request, res: Response) => {
+    res.sendFile(path.join(process.cwd(), "public", "index.html"));
 });
-
+// --- API Routes ---
 app.use('/api/v1', apiRoutes);
 
-
 // --- Error Handling ---
-// This is a placeholder for a more robust error handler.
-// The applicant can improve this.
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     console.error(err.stack);
     res.status(500).json({ message: 'Something went wrong!', error: err.message });
 });
-
 
 export default app;
